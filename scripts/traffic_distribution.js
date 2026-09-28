@@ -2,12 +2,12 @@ import http from 'k6/http'
 import { sleep, check, group } from 'k6'
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
-const BASE_URL = __ENV.BASE_URL || 'https://test.k6.io';
+const BASE_URL = __ENV.BASE_URL || 'https://quickpizza.grafana.com';
 
 const TRAFFIC_SPLIT = {
     home: 0.6,
     news: 0.2,
-    blog: 0.2,
+    contacts: 0.2,
 };
 
 export const options = {
@@ -40,7 +40,7 @@ export default function () {
         sleep(1)
     }
 
-    else if (random < TRAFFIC_SPLIT.home + TRAFFIC_SPLIT.blog) {
+    else if (random < TRAFFIC_SPLIT.home + TRAFFIC_SPLIT.news) {
         group('Open News Page', () => {
             const response = http.get(`${BASE_URL}/news.php`);
 
@@ -52,11 +52,11 @@ export default function () {
     }
 
     else {
-        group('Open Blogs Page', () => {
-            const response = http.get(`${BASE_URL}/blog`);
+        group('Open Contacts Page', () => {
+            const response = http.get(`${BASE_URL}/contacts.php`);
 
             check(response, {
-                'blog loaded': (r) => r.status === 200,
+                'contacts loaded': (r) => r.status === 200,
             });
 
         });

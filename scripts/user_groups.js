@@ -2,7 +2,7 @@ import http from 'k6/http'
 import { sleep, check, group } from 'k6'
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
-const BASE_URL = __ENV.BASE_URL || 'https://test.k6.io';
+const BASE_URL = __ENV.BASE_URL || 'https://quickpizza.grafana.com';
 
 export const options = {
 
@@ -39,11 +39,11 @@ export default function () {
     });
     sleep(1)
 
-    group('Open Blogs Page', () => {
-        const response = http.get(`${BASE_URL}/blog`);
+    group('Open Contacts Page', () => {
+        const response = http.get(`${BASE_URL}/contacts.php`);
 
         check(response, {
-            'blog loaded': (r) => r.status === 200,
+            'contacts loaded': (r) => r.status === 200,
         });
 
     });

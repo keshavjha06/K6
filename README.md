@@ -28,7 +28,7 @@ K6/
 │   ├── k6_script.js             # Ramping stages, thresholds, HTML report, BASE_URL env var
 │   ├── scenarios-executors.js   # Every executor type (uncomment the one to run)
 │   ├── metrics-outputs.js       # Custom Trend, Counter, Gauge and Rate metrics
-│   ├── online-boutique.js       # End-to-end user journey: browse → product → cart → checkout
+│   ├── quickpizza.js            # End-to-end user journey: home → login → pizza recommendation → rating
 │   ├── faker.js                 # Random test data with Faker
 │   ├── user_groups.js           # Grouped requests with an HTML report
 │   └── traffic_distribution.js  # Weighted traffic split across pages (60/20/20)
@@ -58,10 +58,10 @@ Override options from the command line:
 k6 run --vus 10 --duration 30s scripts/get_script.js
 ```
 
-Scripts that read `BASE_URL` (`k6_script.js`, `user_groups.js`, `traffic_distribution.js`) default to `https://test.k6.io`. Pass `-e` to point them at another target:
+Scripts that read `BASE_URL` (`k6_script.js`, `user_groups.js`, `traffic_distribution.js`, `quickpizza.js`) default to [QuickPizza](https://quickpizza.grafana.com), Grafana's public demo app for k6. Pass `-e` to point them at another target, such as a local copy started with `docker run --rm -it -p 3333:3333 ghcr.io/grafana/quickpizza-local:latest`:
 
 ```bash
-k6 run -e BASE_URL=https://test.k6.io scripts/k6_script.js
+k6 run -e BASE_URL=http://localhost:3333 scripts/k6_script.js
 ```
 
 Scripts in `dataParam/` open their data files with relative paths, so run them from inside their folder:
@@ -78,14 +78,14 @@ cd dataParam/csvRead && k6 run csvRead.js
 | `scripts/post_script.js` | POST with JSON body and headers | dummyjson.com |
 | `scripts/checks.js` | Status, body content and size checks | reqres.in |
 | `scripts/thresholds.js` | `checks`, `http_req_blocked`, `http_req_duration` thresholds with `abortOnFail` | reqres.in |
-| `scripts/k6_script.js` | Ramp up/down stages, p95 and error-rate thresholds, `handleSummary` | test.k6.io |
+| `scripts/k6_script.js` | Ramp up/down stages, p95 and error-rate thresholds, `handleSummary` | quickpizza.grafana.com |
 | `scripts/scenarios-executors.js` | `per-vu-iterations`, `shared-iterations`, `constant-vus`, `ramping-vus`, `constant-arrival-rate`, `ramping-arrival-rate`, `externally-controlled` | k6.io |
 | `scripts/metrics-outputs.js` | Custom metrics (`Trend`, `Counter`, `Gauge`, `Rate`) | k6.io |
-| `scripts/online-boutique.js` | Multi-step journey, regex link extraction, HTML parsing | onlineboutique.dev |
+| `scripts/quickpizza.js` | Multi-step journey, token auth, JSON response parsing | quickpizza.grafana.com |
 | `scripts/faker.js` | Generating random user data | — |
-| `scripts/user_groups.js` | `group()` for sequential page flows | test.k6.io |
-| `scripts/traffic_distribution.js` | Probabilistic traffic split between pages | test.k6.io |
-| `httpMethods/httpBatch.js` | Parallel requests for page assets | onlineboutique.dev |
+| `scripts/user_groups.js` | `group()` for sequential page flows | quickpizza.grafana.com |
+| `scripts/traffic_distribution.js` | Probabilistic traffic split between pages | quickpizza.grafana.com |
+| `httpMethods/httpBatch.js` | Parallel requests for pages, assets and APIs | quickpizza.grafana.com |
 | `httpMethods/httpBatchObjects.js` | `batch`/`batchPerHost` options, named batch requests | example.com, duckduckgo.com, k6.io, grafana.com |
 | `dataParam/csvRead/csvRead.js` | `SharedArray` + papaparse CSV, Basic Auth encoding | `http://localhost/login` |
 | `dataParam/simple-data-param/data-param.js` | `SharedArray` with JSON data | `http://localhost` |
